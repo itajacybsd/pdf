@@ -37,9 +37,9 @@ def pdf_to_txt_multicolumn(pdf_path, txt_path):
 
         final_processed_lines = []
         for line in processed_lines:
-            if line.startswith("P"):
-                final_processed_lines.append(line[1:].strip() + "  P")
-            else:
+        #     if line.startswith("P"):
+        #         final_processed_lines.append(line[1:].strip() + "  P")
+        #     else:
                 final_processed_lines.append(line + " ")
 
         text_to_write = "\n".join(final_processed_lines)
