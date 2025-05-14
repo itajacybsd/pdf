@@ -23,7 +23,7 @@ def pdf_to_txt(pdf_path, txt_path):
             cleaned_line = line.strip()
             if cleaned_line and not cleaned_line.startswith("Folha:"):  # Ignore empty lines and "Folha:" lines
                 if cleaned_line.startswith("P"):
-                    processed_lines.append(cleaned_line[1:].strip() + " P")
+                    processed_lines.append(cleaned_line[1:].strip() + "  P")
                 else:
                     processed_lines.append(cleaned_line)
 
@@ -66,3 +66,9 @@ txt_output_folder = r'C:\ConvertePDF\TXT'
 
 # Process the PDF files
 process_pdf_folder(pdf_input_folder, txt_output_folder)
+
+
+# Criar as pastas para alocação dos arquivos
+# C:\ConvertePDF\PDF
+# C:\ConvertePDF\TXT
+#
