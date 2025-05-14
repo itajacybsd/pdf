@@ -1,5 +1,5 @@
 import PyPDF2
-import re
+import os
 
 def pdf_to_txt(pdf_path, txt_path):
     """
@@ -9,7 +9,6 @@ def pdf_to_txt(pdf_path, txt_path):
         pdf_path (str): The path to the input PDF file.
         txt_path (str): The path to the output TXT file.
     """
-
     try:
         with open(pdf_path, 'rb') as pdf_file:
             reader = PyPDF2.PdfReader(pdf_file)
@@ -42,7 +41,28 @@ def pdf_to_txt(pdf_path, txt_path):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-# Example usage:
-pdf_file_path = r'd:\lixo\cesar\teste.pdf'
-txt_file_path = r'd:\lixo\cesar\teste.txt'
-pdf_to_txt(pdf_file_path, txt_file_path)
+def process_pdf_folder(pdf_folder, txt_folder):
+    """
+    Processes all PDF files in the specified folder and saves the TXT files
+    in the output folder.
+
+    Args:
+        pdf_folder (str): The path to the folder containing PDF files.
+        txt_folder (str): The path to the folder where TXT files will be saved.
+    """
+    if not os.path.exists(txt_folder):
+        os.makedirs(txt_folder)
+
+    for filename in os.listdir(pdf_folder):
+        if filename.endswith(".pdf"):
+            pdf_filepath = os.path.join(pdf_folder, filename)
+            txt_filename = os.path.splitext(filename)[0] + ".txt"
+            txt_filepath = os.path.join(txt_folder, txt_filename)
+            pdf_to_txt(pdf_filepath, txt_filepath)
+
+# Specify the input and output folders
+pdf_input_folder = r'C:\ConvertePDF\PDF'
+txt_output_folder = r'C:\ConvertePDF\TXT'
+
+# Process the PDF files
+process_pdf_folder(pdf_input_folder, txt_output_folder)
