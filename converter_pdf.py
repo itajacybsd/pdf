@@ -26,14 +26,14 @@ def pdf_to_txt_multicolumn(pdf_path, txt_path):
         for line in lines:
             cleaned_line = line.strip()
             if cleaned_line and not cleaned_line.startswith("Folha:"):
-                replaced_line = cleaned_line.replace("Folha: 82-0...82-9", "")
+                replaced_line = cleaned_line.replace("Folha: 82-0...82-9   -", "")
                 if current_block and not check_column_break(current_block[-1], replaced_line):
                     processed_lines.append(" ".join(current_block))
                     current_block = [replaced_line]
                 else:
                     current_block.append(replaced_line)
             elif cleaned_line and cleaned_line.startswith("Folha:"):
-                replaced_line = cleaned_line.replace("Folha: 82-0...82-9", "")
+                replaced_line = cleaned_line.replace("Folha: 82-0...82-9   -", "")
                 processed_lines.append(replaced_line)
 
         if current_block:
