@@ -6,7 +6,7 @@ def pdf_to_txt_multicolumn(pdf_path, txt_path):
     """
     Converts the text content of a PDF file with multiple columns to a TXT file,
     attempting to separate lines from different columns.
-    Handles the "P" field and ignores lines starting with "82-0...82-9".
+    Handles the "P" field and replaces "Folha: 82-0...82-9" with "".
 
     Args:
         pdf_path (str): The path to the input PDF file.
@@ -25,12 +25,16 @@ def pdf_to_txt_multicolumn(pdf_path, txt_path):
 
         for line in lines:
             cleaned_line = line.strip()
-            if cleaned_line and not cleaned_line.startswith("Folha:") and not re.match(r"^82-[0-9]", cleaned_line):
-                if current_block and not check_column_break(current_block[-1], cleaned_line):
+            if cleaned_line and not cleaned_line.startswith("Folha:"):
+                replaced_line = cleaned_line.replace("Folha: 82-0...82-9", "")
+                if current_block and not check_column_break(current_block[-1], replaced_line):
                     processed_lines.append(" ".join(current_block))
-                    current_block = [cleaned_line]
+                    current_block = [replaced_line]
                 else:
-                    current_block.append(cleaned_line)
+                    current_block.append(replaced_line)
+            elif cleaned_line and cleaned_line.startswith("Folha:"):
+                replaced_line = cleaned_line.replace("Folha: 82-0...82-9", "")
+                processed_lines.append(replaced_line)
 
         if current_block:
             processed_lines.append(" ".join(current_block))
@@ -38,7 +42,7 @@ def pdf_to_txt_multicolumn(pdf_path, txt_path):
         final_processed_lines = []
         for line in processed_lines:
             if line.startswith("P"):
-                final_processed_lines.append(line[1:].strip() + "  P")
+                final_processed_lines.append(line[1:].strip() + " P")
             else:
                 final_processed_lines.append(line + " ")
 
