@@ -1,8 +1,8 @@
 # Data: 15/05/2025
 # Autor: Itajacy Furtado
-# 
-# Este script converte arquivos PDF em arquivos TXT, 
-# le utiliza a biblioteca PyPDF2 para extrair texto dos PDFs.
+#
+# Este script converte arquivos PDF em arquivos TXT,
+# utilizando a biblioteca PyPDF2 para extrair texto dos PDFs.
 
 import PyPDF2
 import os
@@ -12,15 +12,7 @@ def pdf_to_txt_multicolumn(pdf_path, txt_path):
     """
     Converte o conteúdo de texto de um arquivo PDF com várias colunas em um arquivo TXT,
     tentando separar linhas de colunas diferentes.
-    Como o campo "P" aparece na primeira coluna, e somente em alguns casos, esse campo é
-    movido para o final da linha.
-    O texto é extraído de cada página do PDF e processado para remover quebras de linha
-    e no caso também substitui o texto do cabeçalho específico de "Folha: 82-0...82-9" por "".
-    Pois este código foi desenvolvido para processar arquivos PDF de um representante específico.
-
-    Argumentos:
-    pdf_path (str): caminho para o arquivo PDF que serão lidos.
-    txt_path (str): caminho para o arquivo TXT que será criado.
+    Remove qualquer linha que inicie com "Folha:".
     """
     try:
         with open(pdf_path, 'rb') as pdf_file:
@@ -35,16 +27,19 @@ def pdf_to_txt_multicolumn(pdf_path, txt_path):
 
         for line in lines:
             cleaned_line = line.strip()
-            if cleaned_line and not cleaned_line.startswith("Folha:"):
-                replaced_line = cleaned_line.replace("Folha: 82-0...82-9   -", "")
-                if current_block and not check_column_break(current_block[-1], replaced_line):
+            # Remove completamente a linha se começar com "Folha:"
+            if cleaned_line.startswith("Folha:"):
+                continue
+
+            # Remove o trecho da linha que começa com "Folha:" (caso esteja no meio)
+            cleaned_line = re.sub(r'Folha:.*', '', cleaned_line).strip()
+
+            if cleaned_line:
+                if current_block and not check_column_break(current_block[-1], cleaned_line):
                     processed_lines.append(" ".join(current_block))
-                    current_block = [replaced_line]
+                    current_block = [cleaned_line]
                 else:
-                    current_block.append(replaced_line)
-            elif cleaned_line and cleaned_line.startswith("Folha:"):
-                replaced_line = cleaned_line.replace("Folha: 82-0...82-9   -", "")
-                processed_lines.append(replaced_line)
+                    current_block.append(cleaned_line)
 
         if current_block:
             processed_lines.append(" ".join(current_block))
@@ -69,9 +64,6 @@ def pdf_to_txt_multicolumn(pdf_path, txt_path):
         print(f"Ocorreu um erro: {e}")
 
 def check_column_break(prev_line, current_line, spacing_threshold=50):
-    
-    #Tenta detectar uma quebra de coluna entre duas linhas consecutivas com base no espaçamento.
-    
     prev_words = prev_line.split()
     current_words = current_line.split()
 
@@ -92,14 +84,6 @@ def check_column_break(prev_line, current_line, spacing_threshold=50):
     return False
 
 def process_pdf_folder_multicolumn(pdf_folder, txt_folder):
-    """
-    Processa todos os arquivos PDF na pasta especificada e salva os arquivos TXT
-    na pasta de saída, tentando manipular múltiplas colunas.
-
-    Argumentos:
-    pdf_folder (str): O caminho para a pasta que contém os arquivos PDF.
-    txt_folder (str): O caminho para a pasta onde os arquivos TXT serão salvos.
-    """
     if not os.path.exists(txt_folder):
         os.makedirs(txt_folder)
 
