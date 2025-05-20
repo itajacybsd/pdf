@@ -1,8 +1,18 @@
 # Data: 15/05/2025
-# Autor: Itajacy Furtado
+# Autor: Itajacy Furtado  "Ita"
 #
 # Este script converte arquivos PDF em arquivos TXT,
 # utilizando a biblioteca PyPDF2 para extrair texto dos PDFs.
+#
+# instalar o Python aqui: https://www.python.org/downloads/
+#
+# Adicionar o Path na variável de ambiente do Windows, durante a instalação do Python
+# ou adicionar o caminho do executável do Python no PATH do Windows.
+# Para executar o script, utilize o seguinte comando no terminal:
+# python convertepdf.py
+# 
+# Para instalar a biblioteca PyPDF2, use o seguinte comando:
+# pip install PyPDF2
 
 import PyPDF2
 import os
